@@ -16,30 +16,37 @@ var event = {
     // private
     clickEvents: [],
     keyEvents: [],
-    keyMainEvent: undefined,
+    keyMainEvent,
+
     bindEvent: function (event, obj) {
-        if (global.isString(event))
+        if (global.isString(event)) {
             obj._obj.addEventListener(event, obj._func, false) || obj._obj.attachEvent(event, obj._func);
+        }
         return event;
     },
+
     removeEvent: function (event, obj) {
-        if (global.isString(event))
+        if (global.isString(event)) {
             obj._obj.removeEventListener(event, obj._func, false) || obj._obj.detachEvent(event, obj._func);
+        }
         return event;
     },
+
     bindClickEvent: function (obj) {
         event.bindEvent("onclick", obj);
         event.bindEvent("ontouchstart", obj);
         return event;
     },
+
     removeClickEvent: function (obj) {
         event.removeEvent("onclick", obj);
         event.removeEvent("ontouchstart", obj);
         return event;
     },
+
     bindKeyMainEvent: function () {
         var keyPressedFunction = function (event) {
-            var keyNumber = undefined;
+            var keyNumber;
             if (window.event) {
                 // IE
                 keyNumber = event.keyCode;
@@ -49,22 +56,25 @@ var event = {
                 keyNumber = event.which;
             }
             for (var i = 0; i < event.keyEvents.length; ++i) {
-                if (+keyNumber === +event._key)
+                if (+keyNumber === +event._key) {
                     event._func();
+                }
             }
         };
     },
 
     // public
 
-    /*
-    * @event click
-    *   bind both touch (for touch devices) & click (for desktop computers)
-    *   execute function func
-    *
-    *   note: add func to clickEvents (execute all the functions bound before)
-    * */
+    /**
+     * bind the click event
+     *   bind both touch (for touch devices) & click (for desktop computers)
+     *   execute function func
+     *   note: add func to clickEvents (execute all the functions bound before)
+     * @method event.click
+     * @params { obj, func }
+     */
     click: function (obj, func) {
+
         if (global.isDefined(obj) && global.isDefined(func)) {
             var o = {
                 "_obj": obj,
@@ -73,13 +83,15 @@ var event = {
             event.bindClickEvent(o);
             event.clickEvents.push(o);
         }
+
         return event;
     },
 
-    /*
-    * @removeEvent click
-    * @param func: the SAME function object to that function bound to object before
-    * */
+    /**
+     * remove the click event
+     * @method event.removeClick
+     * @params func: the SAME function object to that function bound to object before
+     */
     removeClick: function (obj, func) {
         if (global.isDefined(obj) && global.isDefined(func)) {
             var o = {
@@ -99,11 +111,12 @@ var event = {
         return event;
     },
 
-    /*
-     * @event keypress
+    /**
+     * event keypress
      *   bind a specific key pressdown event
      *   execute function func
-     * */
+     * @method event.keypress
+     */
     keypress: function (key, func) {
         if (global.isKey(key) && global.isDefined(func)) {
             event.keyEvents.push({
@@ -115,10 +128,12 @@ var event = {
         }
         return event;
     },
-    /*
-     * @removeEvent keypress
-     * @param func: the SAME function object to that function bound to object before
-     * */
+
+    /**
+     * remove the keypress event
+     * @method event.removeKeypress
+     * @params func: the SAME function object to that function bound to object before
+     */
     removeKeypress: function (key, func) {
         if (global.isKey(key) && global.isDefined(func)) {
             var index = event.keyEvents.indexOf({
